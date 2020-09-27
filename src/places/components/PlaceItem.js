@@ -4,11 +4,25 @@ import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/FormElements/Button/Button";
 import "./PlaceItem.css";
 import Modal from "../../shared/components/UIElements/Modal";
+import Map from "../../shared/components/UIElements/Map";
 
 const PlaceItem = (props) => {
   const [showMap, setShowMap] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
+
+  const ShowDelete = () => {
+    setShowConfirmModal(true);
+  };
+  const cancelDelete = () => {
+    setShowConfirmModal(false);
+  };
+
+  const confirmDelete = () => {
+    setShowConfirmModal(false);
+    console.log("Deleting....");
+  };
 
   return (
     <>
@@ -21,9 +35,29 @@ const PlaceItem = (props) => {
         footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
       >
         <div className="map-container">
-          <h2>The MAP!</h2>
+          <Map center={props.coordinates} zoom={16} />
         </div>
       </Modal>
+
+      <Modal
+        show={showConfirmModal}
+        onCancel={cancelDelete}
+        header="Are you Sure ? "
+        footerClass="place-item__modal-actions"
+        footer={
+          <>
+            <Button inverse onClick={cancelDelete}>
+              Cancel
+            </Button>
+            <Button danger onClick={confirmDelete}>
+              DELETE
+            </Button>
+          </>
+        }
+      >
+        <p> Are you Sure ?</p>
+      </Modal>
+
       <li className="place-item">
         <Card className="place-item__content">
           <div className="place-item__image">
@@ -39,7 +73,9 @@ const PlaceItem = (props) => {
               VIEW ON MAP
             </Button>
             <Button to={`/places/${props.id}`}>EDIT</Button>
-            <Button danger>DELETE</Button>
+            <Button danger onClick={ShowDelete}>
+              DELETE
+            </Button>
           </div>
         </Card>
       </li>
